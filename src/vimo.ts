@@ -5,6 +5,8 @@ import {
   createAgentSession,
   DefaultResourceLoader,
   getAgentDir,
+  ModelRuntime,
+  resolveCliModel,
   SessionManager,
   SettingsManager,
 } from "@earendil-works/pi-coding-agent";
@@ -12,8 +14,27 @@ import { userPrompt, vimoHeading } from "./decorators.js";
 import { renderMarkdown } from "./markdown.js";
 import { buildWelcomeMessage, VIMO_SYSTEM_PROMPT } from "./vimoPrompt.js";
 
+type ThinkingLevel = "off" | "minimal" | "low" | "medium" | "high" | "xhigh" | "max";
+
+const THINKING_LEVELS = new Set<ThinkingLevel>(["off", "minimal", "low", "medium", "high", "xhigh", "max"]);
+const DEFAULT_MODEL = "openai-codex/gpt-5.4-mini";
+
 function hasFlag(flag: string): boolean {
   return process.argv.includes(flag);
+}
+
+function optionValue(name: string): string | undefined {
+  const index = process.argv.indexOf(name);
+  if (index === -1) return undefined;
+  const value = process.argv[index + 1];
+  if (!value || value.startsWith("--")) throw new Error(`${name} requires a value`);
+  return value;
+}
+
+function requestedThinking(): ThinkingLevel {
+  const value = optionValue("--thinking") ?? process.env.VIMO_THINKING ?? "low";
+  if (!THINKING_LEVELS.has(value as ThinkingLevel)) throw new Error(`Invalid thinking level: ${value}`);
+  return value as ThinkingLevel;
 }
 
 function printHelp(): void {
@@ -23,6 +44,13 @@ Usage:
   npm run vimo             Start the conversation loop
   npm run vimo -- --help   Show this help
   npm run smoke            Validate local harness wiring without calling a model
+  vimo --model PROVIDER/ID Choose a model for this run
+  vimo --thinking LEVEL    Set reasoning (default: low)
+
+Configuration:
+  VIMO_MODEL               Default model override
+  VIMO_THINKING            Default reasoning override
+  Defaults to openai-codex/gpt-5.4-mini for fast inference.
 
 Markdown:
   VIMo renders markdown responses in the terminal, including code blocks and tables.
@@ -33,7 +61,7 @@ Environment/auth:
 `);
 }
 
-async function createVIMoSession() {
+async function createVimoSession() {
   const cwd = process.cwd();
   const agentDir = getAgentDir();
   const settingsManager = SettingsManager.create(cwd, agentDir);
@@ -47,8 +75,17 @@ async function createVIMoSession() {
   });
   await loader.reload();
 
+  const modelRuntime = await ModelRuntime.create();
+  const requestedModel = optionValue("--model") ?? process.env.VIMO_MODEL ?? DEFAULT_MODEL;
+  const resolved = resolveCliModel({ cliModel: requestedModel, modelRuntime });
+  if (resolved.error || !resolved.model) throw new Error(resolved.error ?? `Model not found: ${requestedModel}`);
+  const model = resolved.model;
+
   return createAgentSession({
     cwd,
+    model,
+    thinkingLevel: requestedThinking(),
+    modelRuntime,
     agentDir,
     resourceLoader: loader,
     settingsManager,
@@ -87,8 +124,11 @@ async function main(): Promise<void> {
   console.log(buildWelcomeMessage());
   console.log("");
 
-  const { session, modelFallbackMessage } = await createVIMoSession();
+  const { session, modelFallbackMessage } = await createVimoSession();
   if (modelFallbackMessage) console.warn(`Note: ${modelFallbackMessage}`);
+  if (session.model) {
+    console.log(`⚡ ${session.model.provider}/${session.model.id} · reasoning ${session.thinkingLevel}`);
+  }
 
   let assistantMarkdown = "";
   session.subscribe((event) => {
@@ -110,6 +150,12 @@ async function main(): Promise<void> {
       await session.prompt(question);
       if (assistantMarkdown.trim()) {
         output.write(`${vimoHeading()}\n${renderMarkdown(assistantMarkdown)}\n`);
+      } else {
+        const modelError = session.agent.state.errorMessage;
+        const message = modelError
+          ? `Model error: ${modelError}`
+          : "No response was returned. Try again or choose another model with `--model`.";
+        output.write(`${vimoHeading()} ⚠️ ${message}\n`);
       }
     }
   } finally {

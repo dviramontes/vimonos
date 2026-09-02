@@ -32,4 +32,16 @@ describe("VIMo prompt", () => {
     assert.match(cliSource, /userPrompt/);
     assert.match(cliSource, /vimoHeading/);
   });
+
+  it("defaults to fast inference with low reasoning", () => {
+    assert.match(cliSource, /openai-codex\/gpt-5\.4-mini/);
+    assert.match(cliSource, /VIMO_MODEL/);
+    assert.match(cliSource, /VIMO_THINKING/);
+    assert.match(cliSource, /\?\? "low"/);
+  });
+
+  it("reports empty responses and model errors", () => {
+    assert.match(cliSource, /session\.agent\.state\.errorMessage/);
+    assert.match(cliSource, /No response was returned/);
+  });
 });

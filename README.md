@@ -47,6 +47,23 @@ Give me a 2-minute Zed Vim practice drill.
 
 Type `exit`, `quit`, `:q`, or `:qa` to leave the loop.
 
+### Model and reasoning
+
+VIMo defaults to the fast `openai-codex/gpt-5.4-mini` model with `low` reasoning. Override either setting for one run:
+
+```bash
+vimo --model anthropic/claude-haiku-4-5 --thinking minimal
+```
+
+Or configure environment defaults:
+
+```bash
+export VIMO_MODEL=anthropic/claude-haiku-4-5
+export VIMO_THINKING=low
+```
+
+Command-line flags take precedence over environment variables. VIMo accepts reasoning levels `off`, `minimal`, `low`, `medium`, `high`, `xhigh`, and `max`.
+
 ## Link the command globally
 
 Create a global `vimo` command linked to this working copy:
