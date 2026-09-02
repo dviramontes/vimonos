@@ -104,7 +104,7 @@ async function runSmoke(): Promise<void> {
   if (!rendered.includes("viw") || !rendered.includes("hello")) {
     throw new Error("Markdown renderer failed smoke test");
   }
-  if (!userPrompt(false).includes("You") || !vimoHeading(false).includes("VIMo")) {
+  if (!userPrompt(false).includes("nos(otros)") || !vimoHeading(false).includes("VIMo(nos)")) {
     throw new Error("Conversation decorators failed smoke test");
   }
   console.log("VIMo smoke OK: prompt, markdown, decorators, and CLI wiring loaded.");
@@ -143,7 +143,10 @@ async function main(): Promise<void> {
     while (true) {
       const question = (await rl.question(`\n${userPrompt()}`)).trim();
       if (!question) continue;
-      if (["exit", "quit", ":q", ":qa"].includes(question.toLowerCase())) break;
+      if (["exit", "quit", ":q", ":qa"].includes(question.toLowerCase())) {
+        console.log("¡Hasta luego!");
+        break;
+      }
 
       assistantMarkdown = "";
       output.write(`${vimoHeading()} thinking…\n`);

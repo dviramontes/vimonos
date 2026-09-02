@@ -17,7 +17,9 @@ describe("VIMo prompt", () => {
     assert.match(promptSource, /small number of related commands/);
     assert.match(promptSource, /potentially destructive commands/);
     assert.match(promptSource, /Whenever possible, finish with one tiny/);
-    assert.match(promptSource, /Tiny exercise:/);
+    assert.match(promptSource, /Pista:/);
+    assert.match(promptSource, /¡Ojo!/);
+    assert.match(promptSource, /Práctica rápida:/);
     assert.match(promptSource, /try rx, then undo with u/);
   });
 
@@ -27,8 +29,8 @@ describe("VIMo prompt", () => {
   });
 
   it("decorates both conversation participants", () => {
-    assert.match(decoratorsSource, /👤 You  ❯/);
-    assert.match(decoratorsSource, /🧭 VIMo ❯/);
+    assert.match(decoratorsSource, /👤 nos\(otros\) ❯/);
+    assert.match(decoratorsSource, /🧭 VIMo\(nos\) ❯/);
     assert.match(cliSource, /userPrompt/);
     assert.match(cliSource, /vimoHeading/);
   });

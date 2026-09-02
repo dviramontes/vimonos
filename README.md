@@ -1,4 +1,4 @@
-# (VIMo)nos
+# VIMo(nos)
 
 VIMo (the agent) is a small conversational Vim tutor built on the Pi agent framework. It is tuned for learning Vim through **Zed editor Vim mode** rather than terminal Vim configuration.
 
@@ -10,10 +10,10 @@ VIMo (the agent) is a small conversational Vim tutor built on the Pi agent frame
 - Suggests relevant shortcuts and commands
 - Explains modes, motions, operators, and text objects concisely
 - Adds small ASCII charts or examples when helpful
-- Offers short exercises for practice
+- Offers short exercises introduced with `Práctica rápida:`
 - Renders markdown responses in the terminal, including code blocks and tables
-- Decorates each speaker with colorful `👤 You ❯` and `🧭 VIMo ❯` labels
-- Warns before potentially destructive commands
+- Decorates each speaker with colorful `👤 nos(otros) ❯` and `🧭 VIMo(nos) ❯` labels
+- Uses `Pista:` for hints and `¡Ojo!` before potentially destructive commands
 
 ## Setup
 
