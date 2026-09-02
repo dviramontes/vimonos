@@ -8,6 +8,7 @@ import {
   SessionManager,
   SettingsManager,
 } from "@earendil-works/pi-coding-agent";
+import { userPrompt, vimoHeading } from "./decorators.js";
 import { renderMarkdown } from "./markdown.js";
 import { buildWelcomeMessage, VIMO_SYSTEM_PROMPT } from "./vimoPrompt.js";
 
@@ -66,7 +67,10 @@ async function runSmoke(): Promise<void> {
   if (!rendered.includes("viw") || !rendered.includes("hello")) {
     throw new Error("Markdown renderer failed smoke test");
   }
-  console.log("Vimo smoke OK: prompt, markdown, and CLI wiring loaded.");
+  if (!userPrompt(false).includes("You") || !vimoHeading(false).includes("Vimo")) {
+    throw new Error("Conversation decorators failed smoke test");
+  }
+  console.log("Vimo smoke OK: prompt, markdown, decorators, and CLI wiring loaded.");
 }
 
 async function main(): Promise<void> {
@@ -97,15 +101,15 @@ async function main(): Promise<void> {
 
   try {
     while (true) {
-      const question = (await rl.question("\nYou: ")).trim();
+      const question = (await rl.question(`\n${userPrompt()}`)).trim();
       if (!question) continue;
       if (["exit", "quit", ":q", ":qa"].includes(question.toLowerCase())) break;
 
       assistantMarkdown = "";
-      output.write("Vimo:\n");
+      output.write(`${vimoHeading()} thinking…\n`);
       await session.prompt(question);
       if (assistantMarkdown.trim()) {
-        output.write(`${renderMarkdown(assistantMarkdown)}\n`);
+        output.write(`${vimoHeading()}\n${renderMarkdown(assistantMarkdown)}\n`);
       }
     }
   } finally {

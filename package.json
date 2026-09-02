@@ -11,7 +11,7 @@
     "start": "tsx src/vimo.ts",
     "vimo": "tsx src/vimo.ts",
     "smoke": "tsx src/vimo.ts --smoke",
-    "test": "node --test test/*.test.mjs"
+    "test": "tsx --test test/*.test.ts"
   },
   "dependencies": {
     "@earendil-works/pi-coding-agent": "^0.84.4",
@@ -19,7 +19,6 @@
     "marked-terminal": "^7.3.0"
   },
   "devDependencies": {
-    "@types/marked-terminal": "^6.1.1",
     "@types/node": "^24.10.1",
     "tsx": "^4.20.6",
     "typescript": "^5.9.3"
