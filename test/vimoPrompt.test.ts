@@ -16,6 +16,9 @@ describe("VIMo prompt", () => {
     assert.match(promptSource, /conversational Vim tutor/);
     assert.match(promptSource, /small number of related commands/);
     assert.match(promptSource, /potentially destructive commands/);
+    assert.match(promptSource, /Whenever possible, finish with one tiny/);
+    assert.match(promptSource, /Tiny exercise:/);
+    assert.match(promptSource, /try rx, then undo with u/);
   });
 
   it("renders markdown responses through the CLI", () => {
