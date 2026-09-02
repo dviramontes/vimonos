@@ -17,7 +17,7 @@ function hasFlag(flag: string): boolean {
 }
 
 function printHelp(): void {
-  console.log(`Vimo — conversational Vim tutor for Zed Vim mode
+  console.log(`VIMo — conversational Vim tutor for Zed Vim mode
 
 Usage:
   npm run vimo             Start the conversation loop
@@ -25,15 +25,15 @@ Usage:
   npm run smoke            Validate local harness wiring without calling a model
 
 Markdown:
-  Vimo renders markdown responses in the terminal, including code blocks and tables.
+  VIMo renders markdown responses in the terminal, including code blocks and tables.
 
 Environment/auth:
-  Vimo uses the Pi SDK and your normal Pi model/auth configuration.
+  VIMo uses the Pi SDK and your normal Pi model/auth configuration.
   Run \`pi /login\` first, or set a supported provider API key such as ANTHROPIC_API_KEY.
 `);
 }
 
-async function createVimoSession() {
+async function createVIMoSession() {
   const cwd = process.cwd();
   const agentDir = getAgentDir();
   const settingsManager = SettingsManager.create(cwd, agentDir);
@@ -53,7 +53,7 @@ async function createVimoSession() {
     resourceLoader: loader,
     settingsManager,
     sessionManager: SessionManager.create(cwd),
-    // Vimo is a tutor, not a coding agent. Keep Pi's safe read-only built-ins available
+    // VIMo is a tutor, not a coding agent. Keep Pi's safe read-only built-ins available
     // for future repo/local-note lookup without giving the tutor edit/write/shell powers.
     tools: ["read", "grep", "find", "ls"],
   });
@@ -61,16 +61,16 @@ async function createVimoSession() {
 
 async function runSmoke(): Promise<void> {
   if (!VIMO_SYSTEM_PROMPT.includes("Zed editor") || !VIMO_SYSTEM_PROMPT.includes("potentially destructive")) {
-    throw new Error("Vimo system prompt is missing required tutoring constraints");
+    throw new Error("VIMo system prompt is missing required tutoring constraints");
   }
   const rendered = renderMarkdown("| Command | Selects |\n|---|---|\n| `viw` | just `hello` |");
   if (!rendered.includes("viw") || !rendered.includes("hello")) {
     throw new Error("Markdown renderer failed smoke test");
   }
-  if (!userPrompt(false).includes("You") || !vimoHeading(false).includes("Vimo")) {
+  if (!userPrompt(false).includes("You") || !vimoHeading(false).includes("VIMo")) {
     throw new Error("Conversation decorators failed smoke test");
   }
-  console.log("Vimo smoke OK: prompt, markdown, decorators, and CLI wiring loaded.");
+  console.log("VIMo smoke OK: prompt, markdown, decorators, and CLI wiring loaded.");
 }
 
 async function main(): Promise<void> {
@@ -87,7 +87,7 @@ async function main(): Promise<void> {
   console.log(buildWelcomeMessage());
   console.log("");
 
-  const { session, modelFallbackMessage } = await createVimoSession();
+  const { session, modelFallbackMessage } = await createVIMoSession();
   if (modelFallbackMessage) console.warn(`Note: ${modelFallbackMessage}`);
 
   let assistantMarkdown = "";
@@ -119,6 +119,6 @@ async function main(): Promise<void> {
 }
 
 main().catch((error) => {
-  console.error(`Vimo error: ${error instanceof Error ? error.message : String(error)}`);
+  console.error(`VIMo error: ${error instanceof Error ? error.message : String(error)}`);
   process.exitCode = 1;
 });

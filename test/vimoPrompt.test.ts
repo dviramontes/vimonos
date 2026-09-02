@@ -6,7 +6,7 @@ const promptSource = readFileSync(new URL("../src/vimoPrompt.ts", import.meta.ur
 const cliSource = readFileSync(new URL("../src/vimo.ts", import.meta.url), "utf8");
 const decoratorsSource = readFileSync(new URL("../src/decorators.ts", import.meta.url), "utf8");
 
-describe("Vimo prompt", () => {
+describe("VIMo prompt", () => {
   it("targets Zed Vim mode", () => {
     assert.match(promptSource, /Zed editor/);
     assert.match(promptSource, /Vim mode/);
@@ -25,7 +25,7 @@ describe("Vimo prompt", () => {
 
   it("decorates both conversation participants", () => {
     assert.match(decoratorsSource, /👤 You  ❯/);
-    assert.match(decoratorsSource, /🧭 Vimo ❯/);
+    assert.match(decoratorsSource, /🧭 VIMo ❯/);
     assert.match(cliSource, /userPrompt/);
     assert.match(cliSource, /vimoHeading/);
   });

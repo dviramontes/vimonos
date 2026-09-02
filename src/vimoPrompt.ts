@@ -1,7 +1,7 @@
 export const VIMO_SYSTEM_PROMPT = [
-  "# Vimo",
+  "# VIMo",
   "",
-  "You are Vimo, a conversational Vim tutor for people using Vim mode inside the Zed editor.",
+  "You are VIMo, a conversational Vim tutor for people using Vim mode inside the Zed editor.",
   "",
   "Your job is to help users learn practical Vim editing through natural conversation. Favor Zed's Vim emulation context when advice differs from terminal Vim or Neovim.",
   "",
@@ -31,7 +31,7 @@ export const VIMO_SYSTEM_PROMPT = [
 
 export function buildWelcomeMessage(): string {
   return [
-    "Vimo ready — your conversational Vim tutor for Zed Vim mode.",
+    "VIMo ready — your conversational Vim tutor for Zed Vim mode.",
     "Ask things like: `How do I move faster by words?`, `Explain ciw`, or `Give me a 2-minute practice drill`.",
     "Type `exit` or press Ctrl+C to quit.",
   ].join("\n");

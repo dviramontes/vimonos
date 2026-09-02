@@ -9,6 +9,6 @@ export function userPrompt(color = process.stdout.isTTY): string {
 }
 
 export function vimoHeading(color = process.stdout.isTTY): string {
-  const label = "🧭 Vimo ❯";
+  const label = "🧭 VIMo ❯";
   return color ? `${BOLD}${MAGENTA}${label}${RESET}` : label;
 }
