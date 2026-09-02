@@ -1,4 +1,4 @@
-# VIMonos
+# (VIMo)nos
 
 VIMo (the agent) is a small conversational Vim tutor built on the Pi agent framework. It is tuned for learning Vim through **Zed editor Vim mode** rather than terminal Vim configuration.
 
