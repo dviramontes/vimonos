@@ -3,6 +3,7 @@ import { describe, it } from "node:test";
 import { readFileSync } from "node:fs";
 
 const promptSource = readFileSync(new URL("../src/vimoPrompt.ts", import.meta.url), "utf8");
+const cliSource = readFileSync(new URL("../src/vimo.ts", import.meta.url), "utf8");
 
 describe("Vimo prompt", () => {
   it("targets Zed Vim mode", () => {
@@ -14,5 +15,10 @@ describe("Vimo prompt", () => {
     assert.match(promptSource, /conversational Vim tutor/);
     assert.match(promptSource, /small number of related commands/);
     assert.match(promptSource, /potentially destructive commands/);
+  });
+
+  it("renders markdown responses through the CLI", () => {
+    assert.match(cliSource, /renderMarkdown/);
+    assert.match(cliSource, /Markdown renderer failed smoke test/);
   });
 });

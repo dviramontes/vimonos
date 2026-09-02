@@ -8,6 +8,7 @@ import {
   SessionManager,
   SettingsManager,
 } from "@earendil-works/pi-coding-agent";
+import { renderMarkdown } from "./markdown.js";
 import { buildWelcomeMessage, VIMO_SYSTEM_PROMPT } from "./vimoPrompt.js";
 
 function hasFlag(flag: string): boolean {
@@ -21,6 +22,9 @@ Usage:
   npm run vimo             Start the conversation loop
   npm run vimo -- --help   Show this help
   npm run smoke            Validate local harness wiring without calling a model
+
+Markdown:
+  Vimo renders markdown responses in the terminal, including code blocks and tables.
 
 Environment/auth:
   Vimo uses the Pi SDK and your normal Pi model/auth configuration.
@@ -58,7 +62,11 @@ async function runSmoke(): Promise<void> {
   if (!VIMO_SYSTEM_PROMPT.includes("Zed editor") || !VIMO_SYSTEM_PROMPT.includes("potentially destructive")) {
     throw new Error("Vimo system prompt is missing required tutoring constraints");
   }
-  console.log("Vimo smoke OK: prompt and CLI wiring loaded.");
+  const rendered = renderMarkdown("| Command | Selects |\n|---|---|\n| `viw` | just `hello` |");
+  if (!rendered.includes("viw") || !rendered.includes("hello")) {
+    throw new Error("Markdown renderer failed smoke test");
+  }
+  console.log("Vimo smoke OK: prompt, markdown, and CLI wiring loaded.");
 }
 
 async function main(): Promise<void> {
@@ -78,11 +86,10 @@ async function main(): Promise<void> {
   const { session, modelFallbackMessage } = await createVimoSession();
   if (modelFallbackMessage) console.warn(`Note: ${modelFallbackMessage}`);
 
-  let sawText = false;
+  let assistantMarkdown = "";
   session.subscribe((event) => {
     if (event.type === "message_update" && event.assistantMessageEvent.type === "text_delta") {
-      sawText = true;
-      output.write(event.assistantMessageEvent.delta);
+      assistantMarkdown += event.assistantMessageEvent.delta;
     }
   });
 
@@ -94,10 +101,12 @@ async function main(): Promise<void> {
       if (!question) continue;
       if (["exit", "quit", ":q", ":qa"].includes(question.toLowerCase())) break;
 
-      sawText = false;
-      output.write("Vimo: ");
+      assistantMarkdown = "";
+      output.write("Vimo:\n");
       await session.prompt(question);
-      if (sawText) output.write("\n");
+      if (assistantMarkdown.trim()) {
+        output.write(`${renderMarkdown(assistantMarkdown)}\n`);
+      }
     }
   } finally {
     rl.close();

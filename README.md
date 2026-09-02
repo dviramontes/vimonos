@@ -9,6 +9,7 @@ Vimo is a small conversational Vim tutor built on the Pi agent framework. It is 
 - Explains modes, motions, operators, and text objects concisely
 - Adds small ASCII charts or examples when helpful
 - Offers short exercises for practice
+- Renders markdown responses in the terminal, including code blocks and tables
 - Warns before potentially destructive commands
 
 ## Setup
@@ -62,4 +63,5 @@ npm run build
 
 - `src/vimo.ts` creates a Pi SDK agent session and a command-line conversation loop.
 - `src/vimoPrompt.ts` contains Vimo's system instructions.
+- `src/markdown.ts` renders markdown responses for terminal display.
 - Vimo keeps Pi's read-only built-in tools (`read`, `grep`, `find`, `ls`) available and avoids edit/write/shell powers by default.
