@@ -47,6 +47,28 @@ Give me a 2-minute Zed Vim practice drill.
 
 Type `exit`, `quit`, `:q`, or `:qa` to leave the loop.
 
+## Link the command globally
+
+Create a global `vimo` command linked to this working copy:
+
+```bash
+npm link
+```
+
+The `prelink` script builds VIMo automatically. You can then launch it from any directory:
+
+```bash
+vimo
+```
+
+After changing the source, rebuild it with `npm run build`. For continuous rebuilding during development, run:
+
+```bash
+npm run build -- --watch
+```
+
+Remove the global link with `npm unlink --global vimonos`.
+
 ## Verify
 
 Local smoke check without a model call:

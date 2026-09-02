@@ -4,10 +4,11 @@
   "private": true,
   "type": "module",
   "bin": {
-    "vimo": "./dist/vimo.js"
+    "vimo": "./dist/src/vimo.js"
   },
   "scripts": {
     "build": "tsc -p tsconfig.json",
+    "prelink": "npm run build",
     "start": "tsx src/vimo.ts",
     "vimo": "tsx src/vimo.ts",
     "smoke": "tsx src/vimo.ts --smoke",
